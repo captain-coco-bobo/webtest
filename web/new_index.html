@@ -1,0 +1,1172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head>
+<title>大屏幕监测</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/animate.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript" src="js/echarts.js"></script>
+<script type="text/javascript" src="js/mock.js"></script>
+	<!--话务与人力情况数据-->
+<script type="text/javascript">
+	var hbData;
+	var groapData=[];
+	var utilzationData=[];
+	var incomingNum = 0;
+	var turnmanNum = 0;
+	var abandonNum = 0;
+	var waiteNum = 0;
+	var completRate = 0;
+	var seviceLevel = 0;
+	var flag = 0;
+	var processingcallnums = 0;
+    var agentidlenums = 0;
+    var agentsetbusynums = 0;
+    var agentrestnums = 0;
+    var agentworknums = 0;
+    var agentloginnums = 0;
+    var queuewaitnumData = [];
+    var incallnumData = [];
+    var agentansnumData = [];
+    var abandoninagentnumData = [];
+    var agentincallnumData = [];
+    var abandoninqueuenumData = [];
+    var logData = [];
+    var queuewaitnumData1 = [];
+    var incallnumData1 = [];
+    var agentansnumData1 = [];
+    var abandoninagentnumData1 = [];
+    var agentincallnumData1 = [];
+    var abandoninqueuenumData1 = [];
+    var logData1 = [];
+    var best = 0;
+    var good = 0;
+    var common = 0;
+    var satisfation = 0;
+    var utilzatioList = [];
+
+//	var Ajax = function ()
+     function trafficData(type) {
+	$.getJSON ("dayData.txt", function (data)
+	{
+	$.each (data, function (i, item)
+	{
+		if(item == null || item == ""){
+		   return;
+		}
+      // alert(item.LOGDATE);
+        hbData  = item;
+        incomingNum = hbData.INCALLNUM;
+        turnmanNum =  hbData.AGENTINCALLNUM;
+        abandonNum =  hbData.ABANDONINQUEUENUM;
+        waiteNum =  hbData.QUEUEWAITNUM;
+        completRate = hbData.COMPLETRATE;
+        processingcallnums  = hbData.PROCESSINGCALLNUMS;
+        agentidlenums = hbData.AGENTIDLENUMS;
+        agentsetbusynums = hbData.AGENTSETBUSYNUMS;
+        agentrestnums = hbData.AGENTRESTNUMS;
+        agentworknums = hbData.AGENTWORKNUMS;
+        agentloginnums =hbData.AGENTLOGINNUMS;
+        seviceLevel = hbData.SUCCANSIN4;
+        best = hbData.BEST;
+        good = hbData.GOOD;
+        common = hbData.COMMON;
+        satisfation = hbData.SATISFACTION;
+//        alert(agentloginnums);
+	});
+	});
+	}
+	</script>
+<!--话后小结数据-->
+	<script type="text/javascript">
+        var resultData = [];
+        var countData = [];
+        //	var Ajax = function ()
+        function resultNum(type) {
+            var resultData1 =[];
+            var countData1 = [];
+            $.getJSON ("result.txt", function (data)
+            {
+                $.each (data, function (i, item)
+                {
+                    if(item == null || item == ""){
+                        return;
+                    }
+                    // alert(item.LOGDATE);
+                    resultData1.push(item.OPERA_NAME);
+                    countData1.push(item.COUNTNUM);
+                });
+                resultData =resultData1;
+                countData = countData1;
+            });
+        }
+	</script>
+
+	<script type="text/javascript">
+        function halfDataSouce(type) {
+            $.getJSON ("halfData.txt", function (data)
+            {
+                queuewaitnumData = [];
+                incallnumData = [];
+                agentansnumData = [];
+                abandoninagentnumData = [];
+                agentincallnumData = [];
+                abandoninqueuenumData = [];
+                logData = [];
+                <!--半小时话务量数据-->
+                $.each (data, function (i, item)
+                {
+                    if(item == null || item == ""){
+                        return;
+                    }
+                    // alert(item.LOGDATE);
+                    queuewaitnumData.push(item.QUEUEWAITNUM);
+                    incallnumData.push(item.INCALLNUM);
+                    agentansnumData.push(item.AGENTANSNUM);
+                    abandoninagentnumData.push(item.ABANDONINAGENTNUM);
+                    agentincallnumData.push(item.AGENTINCALLNUM);
+                    abandoninqueuenumData.push(item.ABANDONINQUEUENUM);
+                    logData.push(item.DELC);
+                });
+            });
+        }
+	</script>
+	<!--话后小结更新情况-->
+	<script type="text/javascript">
+		function getDataSouce() {
+		    if(flag < 9) {
+                document.getElementById("aaa").childNodes[0].innerHTML = "0"+(flag + 1);
+                document.getElementById("bbb").childNodes[0].innerHTML = "0"+(flag + 2);
+                document.getElementById("ccc").childNodes[0].innerHTML = "0"+(flag + 3);
+                document.getElementById("ddd").childNodes[0].innerHTML = "0"+(flag + 4);
+                if (flag+5==10){
+                    document.getElementById("eee").childNodes[0].innerHTML = flag + 5;
+				}else {
+                    document.getElementById("eee").childNodes[0].innerHTML = "0" + (flag + 5);
+                }
+            }else {
+                document.getElementById("aaa").childNodes[0].innerHTML = flag + 1;
+                document.getElementById("bbb").childNodes[0].innerHTML = flag + 2;
+                document.getElementById("ccc").childNodes[0].innerHTML = flag + 3;
+                document.getElementById("ddd").childNodes[0].innerHTML = flag + 4;
+                document.getElementById("eee").childNodes[0].innerHTML = flag + 5;
+			}
+            document.getElementById("aaa").childNodes[2].innerHTML = resultData[flag];
+            document.getElementById("bbb").childNodes[2].innerHTML = resultData[flag+1];
+            document.getElementById("ccc").childNodes[2].innerHTML = resultData[flag+2];
+            document.getElementById("ddd").childNodes[2].innerHTML = resultData[flag+3];
+            document.getElementById("eee").childNodes[2].innerHTML = resultData[flag+4];
+            document.getElementById("aaa").childNodes[4].innerHTML = countData[flag];
+            document.getElementById("bbb").childNodes[4].innerHTML = countData[flag+1];
+            document.getElementById("ccc").childNodes[4].innerHTML = countData[flag+2];
+            document.getElementById("ddd").childNodes[4].innerHTML = countData[flag+3];
+            document.getElementById("eee").childNodes[4].innerHTML = countData[flag+4];
+
+            flag += 5;
+            if (flag >= resultData.length){
+                flag = 0;
+            };
+        }
+	</script>
+<!--员工利用率数据-->
+	<script type="text/javascript">
+        function getUtilzation() {
+            $.getJSON ("test1.txt", function (data)
+            {
+                $.each (data, function (i, item)
+                {
+                    if(item == null || item == ""){
+                        return;
+                    }
+                  utilzatioList = item.UTILZATION;
+                    if (utilzatioList.length%4!=0){
+                        utilzatioList = utilzatioList.slice(0,3);
+					}
+					console.log("utilzatioList:"+JSON.stringify(utilzatioList));
+                });
+            });
+        }
+	</script>
+
+</head>
+
+    <body onload="resultNum(),trafficData(),getDataSouce(),getUtilzation(),halfDataSouce()">
+		<div id="app" class="container">
+			<div class="top">
+				<div class="flex_1_8">
+					<p class="title">话务情况</p>
+					<div class="ht1">
+						<ul>
+							<li>
+								<span>总来电量</span>
+								<span class="animated fs_1_5">{{ globalData.incomingNum }}</span>
+							</li>
+							<li>
+								<span>转人工量</span>
+								<span class="animated fs_1_5">{{ globalData.turnmanNum }}</span>
+							</li>
+						</ul>
+					</div>
+					<div class="ht2 ht2_2">
+						<ul>
+							<li>
+								<span>放弃量(通)</span>
+								<span class="animated fs_1_3">{{ globalData.abandonNum }}</span>
+							</li>
+							<li>
+								<span>排队(人)</span>
+								<span class="animated fs_1_3">{{ globalData.waiteNum }}</span>
+							</li>
+						</ul>
+					</div>
+					<div class="ht2">
+						<ul>
+							<li>
+								<span>接通率(通)</span>
+								<span class="animated fs_1_3">{{ globalData.completRate }}%</span>
+							</li>
+							<li>
+								<span>20S服务水平</span>
+								<span class="animated fs_1_3">{{ globalData.seviceLevel }}%</span>
+							</li>
+						</ul>
+					</div>
+					<div class="ht3">
+						<ul>
+							<li>
+								<span>总满意度</span>
+								<span class="animated fs_2_5">{{ globalData.countDegree }}</span> %
+							</li>
+							<li>
+								<ul class="sec_list">
+									<table>
+										<tr>
+											<td>
+												<li>
+													<span>非常满意：</span>
+													<span class="animated">{{ globalData.satisfaction }}</span>
+												</li>
+											</td>
+
+										</tr>
+										<tr>
+											<td>
+												<li>
+													<span>满&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;意：</span>
+													<span class="animated">{{ globalData.fine }}</span>
+												</li>
+											</td>
+											<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											</td>
+											<td>
+												<li>
+													<span>不满意：</span>
+													<span class="animated">{{ globalData.discontent }}</span>
+												</li>
+											</td>
+										</tr>
+									</table>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="flex_1">
+					<p class="title"  style="padding: 0 20px;">
+						<span>员工利用率</span>
+						<span id="rateCount" style="float:right;font-size:1.4em;line-height:1;"></span>
+					</p>
+					<div class="flex_charts" id="myChart1"></div>
+				</div>
+				<div class="flex_1">
+					<p class="title">人力情况</p>
+					<div class="flex_charts" id="myChart2"></div>
+				</div>
+			</div>
+			<div class="bottom">
+				<div class="flex_1_3">
+					<p class="title">当天每半小时话务情况</p>
+					<div class="flex_charts" id="myChart3"></div>
+				</div>
+				<div class="flex_1 bottom_flex">
+					<div class="bottom_flex_2">
+						<p class="title">话后小结</p>
+						<div class="bottom_list bottom_list_title">
+							<div style="padding-left:1.7em;">序号</div>
+							<div style="text-align:center;padding-right:10px;">业务名称</div>
+							<div style="padding-right:1.8em;">访问量</div>
+						</div>
+						<div id="aaa" class="bottom_list">
+							<div>01</div>
+							<div class="animated">标白高贡菜单</div>
+							<div class="animated">0</div>
+						</div>
+						<div id="bbb" class="bottom_list">
+							<div>02</div>
+							<div class="animated">标白高贡菜单</div>
+							<div class="animated">0</div>
+						</div>
+						<div id="ccc" class="bottom_list">
+							<div>03</div>
+							<div class="animated">账单查询及还款服务</div>
+							<div class="animated">0</div>
+						</div>
+						<div id="ddd" class="bottom_list">
+							<div>04</div>
+							<div class="animated">标白高贡菜单</div>
+							<div class="animated">0</div>
+						</div>
+						<div id="eee" class="bottom_list">
+							<div>05</div>
+							<div class="animated">账单查询及还款服务</div>
+							<div class="animated">0</div>
+						</div>
+					</div>
+					<div class="bottom_flex_1">
+						<p class="title tit_w150">金色时光</p>
+						<div class="bottom_sign_num" >
+							<p class="animated" style="font-size: 30px">{{ globalData.currentSign | numFormat }}</p>
+							<p id = "busNum">当月签约笔数</p>
+						</div>
+						<div class="bottom_sign_destail">
+							<div class="bottom_sign_item">
+								<span id = "busOne">当月呼入金色时光签约金额</span>
+								<span class="animated">{{ globalData.currentSignMoney | moneyFormat }}(元)</span>
+							</div>
+							<div class="bottom_sign_item">
+								<span id = "busTwo">当月呼入分期笔数</span>
+								<span class="animated">{{ globalData.currentIncomNum }}笔</span>
+							</div>
+							<div class="bottom_sign_item">
+								<span id = "busThree">当月呼入分期金额</span>
+								<span class="animated">{{ globalData.currentIncomMoney | moneyFormat }}(元)</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </body>
+</html>
+
+<script type="text/javascript">//变更业务类数据展示情况
+	function getBusinessData() {
+        document.getElementById("busName").innerHTML = "呼入信用卡分期";
+        document.getElementById("busNum").innerHTML = "本年分期手续费金额";
+		document.getElementById("busOne").innerHTML = "张三";
+        document.getElementById("busTwo").innerHTML = "李四";
+        document.getElementById("busThree").innerHTML = "王五";
+    }
+</script>
+<script type="text/javascript">
+	//全局变量
+    var scale = 1;
+    if(window.screen.width >= 1920) {
+    	scale = 1.5;
+    }else if(window.screen.width >= 1600) {
+    	scale = 1.35;
+    }else if(window.screen.width >= 1400) {
+    	scale = 1.1;
+    }
+	var myChart1,myChart2,myChart3;
+	var myColor = ['rgba(13,225,194,0.8)', 'rgba(163,95,217,0.8)', 'rgba(21,165,224,0.8)', 'rgba(245,64,108,0.8)'];
+    var myBgColor = ['rgba(108,96,147,0.6)', 'rgba(108,96,147,0.6)', 'rgba(108,96,147,0.6)', 'rgba(108,96,147,0.6)'];
+    //饼图数据
+    var echartData = [{
+	    value: 56,
+	    name: '通话数'
+	}, {
+	    value: 56,
+	    name: '空闲数'
+	}, {
+	    value: 56,
+	    name: '示忙数'
+	}, {
+	    value: 56,
+	    name: '小休数'
+	}, {
+	    value: 56,
+	    name: '事后数'
+	}, {
+	    value: 45,
+	    name: '在线数'
+	}]
+	var rich = {
+	    yellow: {
+	        color: "#ffffff",
+	        fontSize: 23 * scale
+	    },
+	    total: {
+	        color: "#ffffff",
+	        fontSize: 28 * scale
+	    },
+	    white: {
+	        color: "#ffffff",
+	        fontSize: 15 * scale
+	    },
+	    blue: {
+	        color: '#ffffff',
+	        fontSize: 18 * scale
+	    },
+	    hr: {
+	        borderColor: '#b9aac9',
+	        width: '100%',
+	        borderWidth: 1,
+	        height: 0,
+	    }
+	}
+	// 创建Mock拦截器
+    Mock.mock('http://api.com', {
+        'incomingNum|100000-500000': 1400,
+        'turnmanNum|100000-500000': 100,
+        'abandonNum|0-100': 100,
+        'waiteNum|0-100': 100,
+        'completRate|1-100': 40,
+        'seviceLevel|1-5': '★',
+        'countDegree|60-100': 100,
+        'satisfaction|1-100': 100,
+        'fine|1-100': 100,
+        'discontent|1-100': 100,
+        'currentSign|400-1000': 100,
+        'currentSignMoney|5000-50000': 100,
+        'currentIncomNum|200-400': 100,
+        'currentIncomMoney|5000-50000': 100,
+        'number|1000-10000': 100,
+        'rateRandom|0-10': 10,
+        'halfTimeData|1000-5000': 300
+    });
+
+    // 定义Vue实例
+	var vm = new Vue({
+		el: '#app',
+  		data: {
+  			globalData : {}
+  		},
+  		computed:{
+  			number(val){
+  				return this.globalData.number
+  			}
+  		},
+  		filters:{
+  			numFormat(val) {
+  				if(!val) {
+					if(val == 0){
+						return val
+					}else {
+						return ""
+					}
+				}else {
+					val = val.toString().replace(/(\d)(?=(\d{3})+$)/g, "$1,")
+					return val
+				}
+  			},
+  			moneyFormat(val,point,type) {
+				if(point == 0) {
+					val = val/(10e+9)
+				}else if(point == 1) {
+					val = val/(10e+5)
+				}else if(point == 2) {
+					val = val/(10e+1)
+				}
+				type = 2
+			    let money = val
+			    if (val < 0)
+			        val = 0 - val
+			    if (/[^0-9\.]/.test(val))
+			        return "0.00"
+			    if (val == null || val == "null" || val == "")
+			        return "0.00"
+			    if (type > 0) {
+			    	val = new Number(val).toFixed(type)
+				    val = val.toString().replace(/^(\d*)$/, "$1.")
+				    val = (val + "00").replace(/(\d*\.\d\d)\d*/, "$1")
+				    val = val.replace(".", ",")
+			    }
+
+			    let reg = /(\d)(\d{3},)/
+			    while (reg.test(val))
+			    val = val.replace(reg, "$1,$2")
+			    val = val.replace(/,(\d\d)$/, ".$1")
+			    if (type == 0) {
+			        var a = val.split(".")
+			        if (a[1] == "00") {
+			            val = a[0]
+			        }
+			    }
+			    if(money < 0) {
+			    	money = "-" + val
+			    }else {
+			    	money = val
+			    }
+			    return money
+			}
+  		}
+	});
+	
+//模拟返回的数据组
+var list_arr = [
+		{
+			"125组":"8.15%",
+			"126组":"9.28%",
+			"127组":"8.15%",
+			"130组":"9.28%"
+		},
+		{
+			"SSS":"9.15%",
+			"DDD":"8.28%",
+			"BBB":"1.15%",
+			"FFF":"25.28%"
+		},
+		{
+			"EEE":"12.15%",
+			"RRR":"3.28%",
+			"TTT":"30.15%",
+			"YYY":"1.28%"
+		}
+	]
+
+
+
+	var _num = 0;
+	// 请求
+	function hfDataShow(type) {
+		$(".animated").removeClass("flipInX");
+		$.ajax({
+			url:'http://api.com',
+			type:'post',
+			dataType:"json",
+			success:function(data){
+				
+				//员工利用率 数据处理开始----------------
+				//原始数据
+				
+				var ygval = list_arr[_num];
+				_num ++;
+				if(_num >=list_arr.length){
+					_num = 0;
+				}
+				console.log("ygval:"+JSON.stringify(ygval));
+//				var ygval = {
+//					"125组":"8.15%",
+//					"126组":"9.28%",
+//					"127组":"8.15%",
+//					"130组":"9.28%"
+//					}
+				//将数据整理成数组
+				var key_arr = [],val_arr = [],_lth,_all = 0;
+				for(k in ygval){
+					//整理key
+					key_arr.push(k);
+					//整理value
+					val_arr.push(ygval[k].replace(/\%/g,""));
+					//总数相加
+					_all += Number(ygval[k].replace(/\%/g,""));
+				}
+				console.log("key_arr:"+JSON.stringify(key_arr));
+				console.log("val_arr:"+JSON.stringify(val_arr));
+				//数组长度
+				_lth = key_arr.length;
+				console.log("_lth:"+_lth);
+				//总数
+				console.log("_all:"+_all);
+				
+				
+				//员工利用率  数据处理结束----------------
+				
+				
+				
+				$(".animated").addClass("flipInX");
+				vm.globalData = data;
+                vm.globalData.incomingNum= incomingNum;
+                vm.globalData.turnmanNum= turnmanNum;
+                vm.globalData.abandonNum= abandonNum;
+                vm.globalData.waiteNum= waiteNum;
+                vm.globalData.completRate = completRate;//接通率
+                vm.globalData.seviceLevel = seviceLevel;//二十秒服务水平
+				vm.globalData.countDegree =satisfation;
+				vm.globalData.satisfaction = best;
+				vm.globalData.fine =good;
+				vm.globalData.discontent = common;
+//				vm.globalData.currentSign = "外呼营销";
+				if(data.rateRandom > 4) {
+					var random1 = data.rateRandom + Number(Math.random());
+					var random2 = data.rateRandom + Number(Math.random());
+					var random3 = data.rateRandom + Number(Math.random());
+					var random4 = data.rateRandom + Number(Math.random());
+				} else {
+					var random1 = data.rateRandom + Number(Math.random()*5);
+					var random2 = data.rateRandom + Number(Math.random()*5);
+					var random3 = data.rateRandom + Number(Math.random()*5);
+					var random4 = data.rateRandom + Number(Math.random()*5);
+				}
+				//判断定时器类型
+				if(type == 5000) {
+					return
+				}
+				var n = 0;
+				echartData = [{
+				    value: //hbData.PROCESSINGCALLNUMS,
+					//(100*Math.random()).toFixed(0),
+                    processingcallnums,
+				    name: '通话数'
+				}, {
+				    value: //hbData.AGENTIDLENUMS,
+					//(100*Math.random()).toFixed(0),
+                    agentidlenums,
+				    name: '空闲数'
+				}, {
+				    value: //hbData.AGENTSETBUSYNUMS,
+					//(100*Math.random()).toFixed(0),
+                    agentsetbusynums,
+				    name: '示忙数'
+				}, {
+				    value: //hbData.AGENTRESTNUMS,
+					//(100*Math.random()).toFixed(0),
+                    agentrestnums,
+				    name: '小休数'
+				}, {
+				    value: //hbData.AGENTWORKNUMS,
+					//(100*Math.random()).toFixed(0),
+                    agentworknums,
+				    name: '事后数'
+				}, {
+				    value: //hbData.AGENTLOGINNUMS,
+					//(100*Math.random()).toFixed(0),
+                    agentloginnums,
+				    name: '在线数'
+				}];
+				// 员工利用率局部刷新
+				myChart1.setOption({
+					xAxis: [{
+			            type: 'category',
+			            axisTick: {
+			                show: false
+			            },
+			            axisLine: {
+			                show: false
+			            },
+			            axisLabel: {
+			            	interval: 0,
+		                    fontSize: 15 * scale,
+		                    color: '#ffffff'
+			            },
+			            data: key_arr //数据的单条底部标题 sss
+			        }, {
+			            type: 'category',
+			            axisLine: {
+			                show: false
+			            },
+			            axisTick: {
+			                show: false
+			            },
+			            axisLabel: {
+			                show: false
+			            },
+			            splitArea: {
+			                show: false
+			            },
+			            splitLine: {
+			                show: false
+			            },
+			            data: []
+			        }, ],
+					series: [
+						{
+							type: 'bar',
+	                		xAxisIndex: 1,
+	                		label: {
+			                    normal: {
+			                        formatter: function(params) {
+//			                        	console.log(JSON.stringify(params));
+			                        	
+			                            var stuNum = 0;
+			                            var tempArr = val_arr;
+			                            tempArr.forEach(function(value, index, array) {
+			                                if (params.dataIndex == index) {
+			                                    stuNum = value;
+			                                }
+			                            })
+			                            return stuNum + '%';	//数据的值sss
+			                        }
+			                    }
+			                },
+							data: [40, 40, 40, 40]//可控制虚柱数量 sss
+						},
+			            {
+			                type: 'bar',
+			                data: val_arr	//数据柱的值sss
+			            }
+			        ]
+				}
+				);
+				// 员工总利用率
+                $("#rateCount").text(_all + '%');
+				// 人力情况局部刷新
+				myChart2.setOption({
+					legend: {
+				        formatter: function(name) {
+				            var total = 0; //各科正确率总和
+				            echartData.forEach(function(val, index, array) {
+				                total += Number(val.value);
+				            });
+				            return '{total|' + total + '}';
+				        },
+				        data: [echartData[0].name]
+				    },
+				    series: [{
+				        type: 'pie',
+				        label: {
+				            normal: {
+				                formatter: function(params, ticket, callback) {
+				                    var total = 0;
+				                    echartData.forEach(function(val, index, array) {
+				                        total += Number(val.value);
+				                    });
+				                    return '{white|' + params.name + '}{yellow|' + params.value + '}';
+				                },
+				                rich: rich
+				            }
+				        },
+				        data: echartData
+				    }]
+				});
+				// 当天半小时话务情况
+				var myDate = new Date();
+				var myHours = myDate.getHours();
+				var time1,time2,time3,time4;
+				if(myHours < 8) {
+					time1 = '00:00';
+					time2 = '02:00';
+					time3 = '04:00';
+					time4 = '06:00';
+					time5 = '08:00';
+					return;
+				} else {
+					time1 = (myHours - 8) > 9 ?  (myHours - 8) + ':00' : '0' + (myHours - 8) + ':00';
+					time2 = (myHours - 6) > 9 ?  (myHours - 6) + ':00' : '0' + (myHours - 6) + ':00';
+					time3 = (myHours - 4) > 9 ?  (myHours - 4) + ':00' : '0' + (myHours - 4) + ':00';
+					time4 = (myHours - 2) > 9 ?  (myHours - 2) + ':00' : '0' + (myHours - 2) + ':00';
+					time5 = myHours > 9 ?  myHours + ':00' : '0' + myHours + ':00';
+				}
+                if (queuewaitnumData.length > 18 && queuewaitnumData.length % 2 != 0) {
+                    queuewaitnumData1 = queuewaitnumData.slice(-17);
+                    incallnumData1 = incallnumData.slice(-17);
+                    agentansnumData1 = agentansnumData.slice(-17);
+                    abandoninagentnumData1 = abandoninagentnumData.slice(-17);
+                    agentincallnumData1 = agentincallnumData.slice(-17);
+                    abandoninqueuenumData1 = abandoninqueuenumData.slice(-17);
+                    logData1 =logData.slice(-17);
+                }else {
+                    queuewaitnumData1 = queuewaitnumData.slice(-18);
+                    incallnumData1 = incallnumData.slice(-18);
+                    agentansnumData1 = agentansnumData.slice(-18);
+                    abandoninagentnumData1 = abandoninagentnumData.slice(-18);
+                    agentincallnumData1 = agentincallnumData.slice(-18);
+                    abandoninqueuenumData1 = abandoninqueuenumData.slice(-18);
+                    logData1 =logData.slice(-18);
+                }
+				var halfData1 = [1000,3000,2500,4000,3600,1000,3000,2500,4000,3600,1000,3000,2500,4000,3600],
+					halfData2 = incallnumData1,
+					halfData3 = [],
+					halfData4 = [],
+					halfData5 = [],
+					halfData6 = [];
+				var halfTimeData = data.halfTimeData;
+				for (var i = 0; i < 18; i++) {
+//					halfData1.push(Number((halfTimeData*Math.random()).toFixed(0)));
+//					halfData2.push(Number((halfTimeData*Math.random()).toFixed(0)));
+					halfData3.push(Number((halfTimeData*Math.random()).toFixed(0)));
+					halfData4.push(Number((halfTimeData*Math.random()).toFixed(0)));
+					halfData5.push(Number((halfTimeData*Math.random()).toFixed(0)));
+					halfData6.push(Number((halfTimeData*Math.random()).toFixed(0)));
+				};
+				myChart3.setOption({
+					xAxis: {
+				        type: 'category',
+				        boundaryGap: ['10%', '10%'],
+				        data: [time1,'','','',time2,'','','',time3,'','','',time4,'','','',time5,'']
+				    },
+				    series: [
+				        {
+				            name:'总来电量',
+				            type:'line',
+				            data:halfData1
+				        },
+				        {
+				            name:'转人工量',
+				            type:'line',
+				            data:halfData2
+				        },
+				        {
+				            name:'放弃量',
+				            type:'line',
+				            data:halfData3
+				        },
+				        {
+				            name:'排队人数',
+				            type:'line',
+				            data:halfData4
+				        }//,
+//				        {
+//				            name:'20s服务水平',
+//				            type:'bar',
+//				            data:halfData5
+//				        }//,
+//				        {
+//				            name:'20s服务水平',
+//				            type: 'bar',
+//				            data:halfData6
+//				        }
+				    ]
+				})
+			}
+		})
+	}
+
+	// 定时器
+	var interval1 = setInterval(function(){
+		hfDataShow(5000);
+	},5000)
+	var interval2 = setInterval(function(){
+		hfDataShow(20000);
+	},20000)
+    var interval3 = setInterval(function(){
+        trafficData(5000);
+    },5000)
+    var interval4 = setInterval(function(){
+        getDataSouce(5000);
+    },5000)
+    var interval5 = setInterval(function(){
+        resultNum(5000);
+    },5000)
+    var interval6 = setInterval(function(){
+        halfDataSouce(5000);
+    },5000)
+    var interval7 = setInterval(function(){
+        getBusinessData(5000);
+    },5000)
+
+
+	// 预加载
+	$(function(){
+		hfDataShow();
+	    var docHeight = document.body.offsetHeight;
+	    $(".container").innerHeight(docHeight);
+	    $(window).resize(function(){
+	    	var tempHeight = document.body.offsetHeight;
+	    	if(docHeight == window.screen.height){
+	    		$(".container").innerHeight(tempHeight);
+	    		myChart1.resize();
+	    		myChart2.resize();
+	    		myChart3.resize();
+	    		return;
+	    	}
+	    	if(tempHeight > docHeight) {
+	    		$(".container").innerHeight(tempHeight);
+	    		myChart1.resize();
+	    		myChart2.resize();
+	    		myChart3.resize();
+	    	} else{
+	    		$(".container").innerHeight(docHeight);
+	    		myChart1.resize();
+	    		myChart2.resize();
+	    		myChart3.resize();
+	    	}
+	    })
+	    // 话务情况
+	    myChart1 = echarts.init(document.getElementById('myChart1'));
+	    var option = {
+	        grid: {
+	            left: '3%',
+	            top: '15%',
+	            right: '2%',
+	            bottom: '3%',
+	            containLabel: true
+	        },
+	        xAxis: [{
+	            type: 'category',
+	            axisTick: {
+	                show: false
+	            },
+	            axisLine: {
+	                show: false
+	            },
+	            axisLabel: {
+	            	interval: 0,
+                    fontSize: 15 * scale,
+                    color: '#ffffff'
+	            },
+	            data: ['个人组', '贵宾组', '综合业务组', '外包组',]
+//				data:groapData
+	        }, {
+	            type: 'category',
+	            axisLine: {
+	                show: false
+	            },
+	            axisTick: {
+	                show: false
+	            },
+	            axisLabel: {
+	                show: false
+	            },
+	            splitArea: {
+	                show: false
+	            },
+	            splitLine: {
+	                show: false
+	            },
+	            data: []
+	        }, ],
+	        yAxis: {
+	        	show: false,
+	            type: 'value',
+	            name: '单位：件',
+	            nameGap: 35,
+	            nameTextStyle: {
+	                color: '#ffffff',
+	                fontSize: 16 * scale
+	            },
+	            axisTick: {
+	                show: false
+	            },
+	            axisLine: {
+	                show: false
+	            },
+	            splitLine: {
+	                show: false
+	            },
+	            axisLabel: {
+	                show: false
+	            }
+	        },
+	        series: [{
+	                type: 'bar',
+	                xAxisIndex: 1,
+	                itemStyle: {
+	                    normal: {
+	                        show: true,
+	                        color: function(params) {
+	                            var num = myBgColor.length;
+	                            return myBgColor[params.dataIndex % num]
+	                        },
+	                        borderWidth: 0,
+	                        borderColor: '#333',
+	                    }
+	                },
+	                label: {
+	                    normal: {
+	                        show: true,
+	                        position: 'top',
+	                        padding:[0,0,7,0],
+	                        textStyle: {
+	                            color: '#ffffff',
+	                            fontSize: 21 * scale
+	                        }
+	                    }
+	                },
+	                barWidth: '45%',
+	                data: [33, 33, 33, 33]
+	            },
+	            {
+	                type: 'bar',
+	                itemStyle: {
+	                    normal: {
+	                        show: true,
+	                        color: function(params) {
+	                            var num = myColor.length;
+	                            return myColor[params.dataIndex % num]
+	                        },
+	                        barBorderRadius: [5, 5, 0, 0],
+	                        borderWidth: 0,
+	                        borderColor: '#333',
+	                    }
+	                },
+	                label: {
+	                    normal: {
+	                        show: false,
+	                    }
+	                },
+	                barWidth: '45%',
+	                data: []
+	            }
+	        ]
+	    };
+        myChart1.setOption(option);
+        // 人力情况
+	    myChart2 = echarts.init(document.getElementById('myChart2'));
+		option = {
+			tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c} ({d}%)"
+		    },
+		    legend: {
+		        left: 'center',
+		        top: 'center',
+		        icon: 'none',
+		        align:'center',
+		        textStyle: {
+		            color: "#fff",
+		            fontSize: 18 * scale,
+		            rich: rich
+		        },
+		    },
+		    series: [{
+		        name: '人力情况',
+		        type: 'pie',
+		        radius: ['35%', '52%'],
+		        startAngle:'120',
+		        color: ['#9cd769', '#f1ea2b', '#f6af3d', '#42c3ea', '#3f5fea', '#d74a4a'],
+		        labelLine: {
+		            normal: {
+		            	length: 18,
+		            	length2: 10,
+		                lineStyle: {
+		                    color: '#b9aac9'
+		                }
+		            }
+		        },
+		        data: []
+		    }]
+		};
+        myChart2.setOption(option);
+        // 当天每半小时话务情况
+        myChart3 = echarts.init(document.getElementById('myChart3'));
+        option = {
+		    tooltip: {
+		        trigger: 'axis'
+		    },
+		    legend: {
+		        left:20,
+		        itemWidth:20,
+		        itemHeight:10,
+		        itemGap:20,
+		        textStyle:{
+		            color:"#ffffff",
+		            fontSize: 13 * scale
+		        },
+		        data:['总来电量','转人工量','放弃量','排队人数']
+		    },
+		    grid: {
+		    	top: '10%',
+		        left: '1%',
+		        right: '4%',
+		        bottom: '3%',
+		        containLabel: true
+		    },
+		    xAxis: {
+		        type: 'category',
+		        axisLabel:{
+		            fontSize:15 * scale,
+		            color:"#ffffff",
+		            interval:0
+		        },
+		        axisTick:{
+		            show:false
+		        },
+		        axisLine:{
+		            lineStyle:{
+		                color:"#5c5c88"
+		            }
+		        },
+		        splitLine:{
+		            show:false
+		        },
+		        data: ['','00:00','','','','02:00','','','','04:00','','','','06:00','','','','08:00','']
+		    },
+		    yAxis: [{
+		        type: 'value',
+		        min: 0,
+		        max: 5000,
+		        splitNumber:10,
+		        axisTick:{
+		            show:false
+		        },
+		        axisLabel:{
+		            fontSize:15 * scale,
+		            color:"#ffffff"
+		        },
+		        axisLine:{
+		            lineStyle:{
+		                color:"#5c5c88"
+		            }
+		        },
+		        splitLine:{
+		            lineStyle:{
+		                color:"#5c5c88"
+		            }
+		        }
+		    },
+		    {
+		        type: 'value',
+		        min: 0,
+		        max: 5000,
+		        splitNumber:10,
+		        axisTick:{
+		            show:false
+		        },
+		        axisLabel:{
+		            show:false
+		        },
+		        axisLine:{
+		            lineStyle:{
+		                color:"#5c5c88"
+		            }
+		        },
+		        splitLine:{
+		            lineStyle:{
+		                color:"#5c5c88"
+		            }
+		        }
+		    }],
+		    color:['#d74a4a','#97ce68','#b421bb','#049ecc','#f1ea2b','#a397ff'],
+		    series: [
+		        {
+		            name:'总来电量',
+		            type:'line',
+		            symbolSize:7,
+		            symbol: "circle",
+		            data:[400, 232, 151, 134, 125, 120, 120, 120, 120, 120, 120, 120, 151, 700, 1100, 1400, 1700, 2300, 2800]
+		        },
+		        {
+		            name:'转人工量',
+		            type:'line',
+		            symbolSize:7,
+		            symbol: "circle",
+		            data:[120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 200, 750, 1200]
+		        },
+		        {
+		            name:'放弃量',
+		            type:'line',
+		            symbolSize:7,
+		            symbol: "circle",
+		            data:[120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 180, 690, 1050]
+		        },
+		        {
+		            name:'排队人数',
+		            type:'line',
+		            symbolSize:7,
+		            symbol: "circle",
+		            data:[120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 180, 690, 1050]
+		        }//,
+//		        {
+//		            name:'20s服务水平',
+//		            type:'line',
+//		            symbolSize:7,
+//		            symbol: "circle",
+//		            data:[120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120]
+//		        }//,
+//		        {
+//		            name:'20s服务水平',
+//		            type: 'bar',
+//		            barWidth: '55%',
+//		            data:[0, 400, 0, 0, 0, 120, 0, 0, 0, 120, 0, 0, 0, 380, 0, 0, 0, 1400, 0]
+//		        }
+		    ]
+		};
+        myChart3.setOption(option);
+	})
+</script>

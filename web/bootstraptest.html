@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>小屏幕监控</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-table.css" />
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>
+    <script src="js/bootstrap-table-zh-CN.js"></script>
+
+    <!--<script src="./bootstrap-table/bootstrap-table-export.js"></script>-->
+    <!--<script src="./extends/tableExport/jquery.base64.js"></script>-->
+    <!--<script src="./extends/tableExport/tableExport.js"></script>-->
+    <script type="text/javascript">
+        var resultData = [];
+        //	var Ajax = function ()
+        function resultNum(type) {
+            var resultData1 =[];
+            $.getJSON ("agentMonitor.txt", function (data)
+            {
+                $.each (data, function (i, item)
+                {
+                    if(item == null || item == ""){
+                        return;
+                    }
+                    // alert(item.LOGDATE);
+                    resultData1.push(item);
+//                    resultData[i]={"agentCallSuccSum":item.agentCallSuccSum,"agentCallTimeSum":item.agentCallTimeSum};
+                });
+                resultData =resultData1
+            });
+        }
+    </script>
+
+</head>
+
+<body onload="resultNum()">
+<div id="reportTableDiv" >
+    <table id="reportTable"></table>
+</div>
+<script type="text/javascript">
+    //手动制造30条数据
+    var datas  = [];
+    for(var i=0;i<300;i++){
+        datas[i]={"QUEUEWAITNUM":"张三丰"+i+"号","INCALLNUM":i}
+    }
+
+
+    $(function () {
+        $('#reportTable').bootstrapTable({
+            method: 'get',
+            cache: false,
+            height: 800,
+            striped: true,
+            pagination: true,
+            pageSize: 20,
+            pageNumber:1,
+            pageList: [10, 20, 50, 100, 200, 500],  sidePagination:'client',
+            search: true,
+            showColumns: true,
+            showRefresh: false,
+            showExport: false,
+            exportTypes: ['csv','txt','xml'],
+            search: true,
+            clickToSelect: true,
+            columns:
+                [
+                    {field:"checked",checkbox:true},
+                    {field:"QUEUEWAITNUM",title:"姓名",align:"center",valign:"middle",sortable:"true"},
+                    {field:"agentId",title:"工号",align:"center",valign:"middle",sortable:"true"},
+                    {field:"DELC1",title:"职场",align:"center",valign:"middle",sortable:"true"},
+                    {field:"DELC",title:"班次",align:"center",valign:"middle",sortable:"true"},
+                    {field:"statusDesc",title:"状态",align:"center",valign:"middle",sortable:"true"},
+                    {field:"currentStateTime",title:"当前状态时长",align:"center",valign:"middle",sortable:"true"},
+                    {field:"avgCallTime",title:"当日平均通话时长",align:"center",valign:"middle",sortable:"true"},
+                    {field:"agentRestTime",title:"当日累计小休时长",align:"center",valign:"middle",sortable:"true"},
+                    {field:"DELC",title:"单日累计示忙时长",align:"center",valign:"middle",sortable:"true"},
+                    {field:"DELC",title:"值机率",align:"center",valign:"middle",sortable:"true"},
+
+                ],
+//            data:resultData[0],
+            data:datas
+        });
+    });
+</script>
+
+</body>
+</html>
+<script>
+    var interval1 = setInterval(function(){
+        resultNum(5000);
+    },5000)
+</script>

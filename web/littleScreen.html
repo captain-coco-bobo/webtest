@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head>
+    <title>小屏监控</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/animate.css">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script type="text/javascript" src="js/echarts.js"></script>
+    <script type="text/javascript" src="js/mock.js"></script>
+    <script type="text/javascript">
+        var hbdata;
+        var incomingNum = 0;
+        var turnmanNum = 0;
+        var abandonNum = 0;
+        var waiteNum = 0;
+        var completRate = 0;
+        var seviceLevel = 0;
+        var processingcallnums = 0;
+        var agentidlenums = 0;
+        var agentsetbusynums = 0;
+        var agentrestnums = 0;
+        var agentworknums = 0;
+        var agentloginnums = 0;
+        function trafficData(type) {
+            $.getJSON ("dayData.txt", function (data)
+            {
+                $.each (data, function (i, item)
+                {
+                    if(item == null || item == ""){
+                        return;
+                    }
+                    // alert(item.LOGDATE);
+                    hbData  = item;
+                    incomingNum = hbData.INCALLNUM;
+                    turnmanNum =  hbData.AGENTINCALLNUM;
+                    abandonNum =  hbData.ABANDONINQUEUENUM;
+                    waiteNum =  hbData.QUEUEWAITNUM;
+                    completRate = hbData.COMPLETRATE;
+                    processingcallnums  = hbData.PROCESSINGCALLNUMS;
+                    agentidlenums = hbData.AGENTIDLENUMS;
+                    agentsetbusynums = hbData.AGENTSETBUSYNUMS;
+                    agentrestnums = hbData.AGENTRESTNUMS;
+                    agentworknums = hbData.AGENTWORKNUMS;
+                    agentloginnums =hbData.AGENTLOGINNUMS;
+                    seviceLevel = hbData.SUCCANSIN4;
+//        alert(agentloginnums);
+                });
+            });
+        }
+    </script>
+</head>
+<body onload="trafficData()">
+<div id="app" class="container">
+    <div class="top">
+        <div class="flex_1_8">
+            <div style="height: 60%">
+                    <p class="title">话务情况</p>
+                    <div class="ht1" style="height: 20%">
+                        <ul>
+                            <li>
+                                <span>总来电量</span>
+                                <span class="animated fs_1_5">{{ globalData.incomingNum }}</span>
+                            </li>
+                            <li>
+                                <span>转人工量</span>
+                                <span class="animated fs_1_5">{{ globalData.turnmanNum }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="ht2 ht2_2" style="height: 20%">
+                        <ul>
+                            <li>
+                                <span>放弃量(通)</span>
+                                <span class="animated fs_1_3">{{ globalData.abandonNum }}</span>
+                            </li>
+                            <li>
+                                <span>排队(人)</span>
+                                <span class="animated fs_1_3">{{ globalData.waiteNum }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="ht2" style="height: 20%">
+                        <ul>
+                            <li>
+                                <span>接通率(通)</span>
+                                <span class="animated fs_1_3">{{ globalData.completRate }}%</span>
+                            </li>
+                            <li>
+                                <span>20S服务水平</span>
+                                <span class="animated fs_1_3">{{ globalData.seviceLevel }}%</span>
+                            </li>
+                        </ul>
+                    </div>
+            </div>
+
+
+            <div style="height: 40%">
+                <div class="bottom_flex_1" style="float: left; width: 45%; height: 20%">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="bottom_sign_name" style="font-size: 24px">
+                                    金<br />色<br />时<br />光
+                                </div>
+                            </td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div class="bottom_sign_num" style="font-size: 22px">
+                                    <p class="animated">{{ globalData.currentSign | numFormat }}</p>
+                                    <p>当月签约笔数</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                    <div class="bottom_sign_destail" style="float: right; width: 55%; height: 40%" >
+                        <div class="bottom_sign_item">
+                            <span>当月呼入金色时光签约金额</span>
+                            <span class="animated">{{ globalData.currentSignMoney | moneyFormat }}(元)</span>
+                        </div>
+                        <div class="bottom_sign_item">
+                            <span>当月呼入分期笔数</span>
+                            <span class="animated">{{ globalData.currentIncomNum }}笔</span>
+                        </div>
+                        <div class="bottom_sign_item">
+                            <span>当月呼入分期金额</span>
+                            <span class="animated">{{ globalData.currentIncomMoney | moneyFormat }}(元)</span>
+                        </div>
+                    </div>
+            </div>
+        </div>
+</div>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    // 创建Mock拦截器
+    Mock.mock('http://api.com', {
+        'incomingNum|100000-500000': 1400,
+        'turnmanNum|100000-500000': 100,
+        'abandonNum|0-100': 100,
+        'waiteNum|0-100': 100,
+        'completRate|1-100': 40,
+        'seviceLevel|1-5': '★',
+        'countDegree|60-100': 100,
+        'satisfaction|1-100': 100,
+        'fine|1-100': 100,
+        'discontent|1-100': 100,
+        'currentSign|400-1000': 100,
+        'currentSignMoney|5000-50000': 100,
+        'currentIncomNum|200-400': 100,
+        'currentIncomMoney|5000-50000': 100,
+        'number|1000-10000': 100,
+        'rateRandom|0-10': 10,
+        'halfTimeData|1000-5000': 300
+    });
+    // 定义Vue实例
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            globalData : {}
+        },
+        computed:{
+            number(val){
+                return this.globalData.number
+            }
+        },
+        filters:{
+            numFormat(val) {
+                if(!val) {
+                    if(val == 0){
+                        return val
+                    }else {
+                        return ""
+                    }
+                }else {
+                    val = val.toString().replace(/(\d)(?=(\d{3})+$)/g, "$1,")
+                    return val
+                }
+            },
+            moneyFormat(val,point,type) {
+                if(point == 0) {
+                    val = val/(10e+9)
+                }else if(point == 1) {
+                    val = val/(10e+5)
+                }else if(point == 2) {
+                    val = val/(10e+1)
+                }
+                type = 2
+                let money = val
+                if (val < 0)
+                    val = 0 - val
+                if (/[^0-9\.]/.test(val))
+                    return "0.00"
+                if (val == null || val == "null" || val == "")
+                    return "0.00"
+                if (type > 0) {
+                    val = new Number(val).toFixed(type)
+                    val = val.toString().replace(/^(\d*)$/, "$1.")
+                    val = (val + "00").replace(/(\d*\.\d\d)\d*/, "$1")
+                    val = val.replace(".", ",")
+                }
+
+                let reg = /(\d)(\d{3},)/
+                while (reg.test(val))
+                    val = val.replace(reg, "$1,$2")
+                val = val.replace(/,(\d\d)$/, ".$1")
+                if (type == 0) {
+                    var a = val.split(".")
+                    if (a[1] == "00") {
+                        val = a[0]
+                    }
+                }
+                if(money < 0) {
+                    money = "-" + val
+                }else {
+                    money = val
+                }
+                return money
+            }
+        }
+    });
+    // 请求
+    function hfDataShow(type) {
+        $(".animated").removeClass("flipInX");
+        $.ajax({
+            url:'http://api.com',
+            type:'post',
+            dataType:"json",
+            success:function(data){
+                $(".animated").addClass("flipInX");
+                vm.globalData = data;
+                vm.globalData.incomingNum= incomingNum;
+                vm.globalData.turnmanNum= turnmanNum;
+                vm.globalData.abandonNum= abandonNum;
+                vm.globalData.waiteNum= waiteNum;
+                vm.globalData.completRate = completRate;
+                vm.globalData.seviceLevel = seviceLevel;
+            }
+        })
+    }
+
+    // 定时器
+    var interval1 = setInterval(function(){
+        hfDataShow(5000);
+    },5000)
+    var interval2 = setInterval(function(){
+        hfDataShow(20000);
+    },20000)
+
+
+
+    // 预加载
+    $(function(){
+        hfDataShow();
+        var docHeight = document.body.offsetHeight;
+        $(".container").innerHeight(docHeight);
+    })
+</script>
